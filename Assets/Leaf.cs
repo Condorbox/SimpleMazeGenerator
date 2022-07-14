@@ -17,6 +17,8 @@ public class Leaf
     private Leaf leftChild;
     private Leaf rightChild;
 
+    private GameObject container;
+
     public Leaf(int x, int z, int width, int depth, float scale)
     {
         this.xPos = x;

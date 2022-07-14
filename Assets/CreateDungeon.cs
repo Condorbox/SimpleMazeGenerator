@@ -13,16 +13,30 @@ public class CreateDungeon : MonoBehaviour
     private byte[,] map;
     List<Vector2> corridors = new List<Vector2>();
     [SerializeField] private int ExtraCorridors = 7;
+    private GameObject container;
 
     private void Awake()
     {
-        map = InitializeMap(mapWidth, mapDepth);
+        GenerateMaze();
+    }
+
+    private void GenerateMaze()
+    {
+        container = new GameObject("Maze Container");
         root = new Leaf(0, 0, mapWidth, mapDepth, mapScale);
+        corridors = new List<Vector2>();
+        map = InitializeMap(mapWidth, mapDepth);
 
         BSP(root, treeLevel);
         AddCorridors();
         AddRandomCorridors(ExtraCorridors);
         DrawMap();
+    }
+
+    public void ReGenerateMaze()
+    {
+        Destroy(container);
+        GenerateMaze();
     }
 
     private byte[,] InitializeMap(int width, int depth)
@@ -146,13 +160,8 @@ public class CreateDungeon : MonoBehaviour
                     GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     cube.transform.position = new Vector3(x * mapScale, 10, z * mapScale);
                     cube.transform.localScale = new Vector3(mapScale, mapScale, mapScale);
-                }
-                else if (map[x, z] == 2)
-                {
-                    GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    cube.transform.position = new Vector3(x * mapScale, 10, z * mapScale);
-                    cube.transform.localScale = new Vector3(mapScale, mapScale, mapScale);
-                    cube.GetComponent<Renderer>().material.color = Color.black;
+
+                    cube.transform.parent = container.transform;
                 }
             }
         }
